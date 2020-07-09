@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>哈夫曼树与哈夫曼编码原理与代码实现 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="哈夫曼编码是一种编码方式，哈夫曼编码是可变字长编码(VLC)的一种。Huffman于1952年提出一种编码方法，该方法完全依据字符出现概率来构造异字头的平均长度最短的码字，有时称之为最佳编码，一般就叫做Huffman编码，是一种很好的文件压缩得到编码形式。 举一个例子：哈夫曼编码根据不同的字母（汉字）在文章中出现的频率不同构建不等长的编码，给出现频率最高的字最短的编码，给出现频率最低的字最长的编码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈夫曼树与哈夫曼编码原理与代码实现">
+<meta property="og:url" content="http://yoursite.com/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="哈夫曼编码是一种编码方式，哈夫曼编码是可变字长编码(VLC)的一种。Huffman于1952年提出一种编码方法，该方法完全依据字符出现概率来构造异字头的平均长度最短的码字，有时称之为最佳编码，一般就叫做Huffman编码，是一种很好的文件压缩得到编码形式。 举一个例子：哈夫曼编码根据不同的字母（汉字）在文章中出现的频率不同构建不等长的编码，给出现频率最高的字最短的编码，给出现频率最低的字最长的编码">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020070916332757.PNG#pic_center">
+<meta property="article:published_time" content="2020-07-09T09:08:13.196Z">
+<meta property="article:modified_time" content="2020-07-09T09:08:41.240Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2020070916332757.PNG#pic_center">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-哈夫曼树与哈夫曼编码原理与代码实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/" class="article-date">
+  <time datetime="2020-07-09T09:08:13.196Z" itemprop="datePublished">2020-07-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      哈夫曼树与哈夫曼编码原理与代码实现
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>哈夫曼编码是一种编码方式，哈夫曼编码是可变字长编码(VLC)的一种。Huffman于1952年提出一种编码方法，该方法完全依据字符出现概率来构造异字头的平均长度最短的码字，有时称之为最佳编码，一般就叫做Huffman编码，是一种很好的文件压缩得到编码形式。</p>
+<p>举一个例子：哈夫曼编码根据不同的字母（汉字）在文章中出现的频率不同构建不等长的编码，给出现频率最高的字最短的编码，给出现频率最低的字最长的编码，这样可以有效的节省空间，并且所有较短的编码都不是较长的编码的前缀，避免了二义性的问题。</p>
+<p>哈夫曼编码需要通过哈夫曼树来实现，而哈夫曼树中各个元素的位置则与不同元素出现的频率（权重）有关系，需要通过权重来为其安排合适的位置，我先介绍安排位置的思想和代码实现。<br>下面是哈夫曼树节点的结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> weight;<span class="comment">//权值</span></span><br><span class="line">	<span class="keyword">int</span> parents;<span class="comment">//父母</span></span><br><span class="line">	<span class="keyword">int</span> LChild,RChild;<span class="comment">//左右孩子</span></span><br><span class="line">	<span class="keyword">int</span> flag;<span class="comment">//标志（后面有解释）</span></span><br><span class="line">&#125;HT;</span><br></pre></td></tr></table></figure>
+
+<p>假如现在又一组数组 ``int a[] = {15,10,2,1,4}` 代表了a b c d e 在文章中的出现频率，我们发现a的出现频率（权重）最高，所以对于a的编码一定是最短的，而d出现的频率最低，所以d编码最长。<br>为了能满足权重大的距离根节点位置近，权重小的距离根节点位置远，我们可以每次在数组中挑选出两个权重最小的节点，在产生一个新节点，新节点的权值是两个子节点之和，然后在数组中剔除两个子节点，加入新节点。之后再重复这个过程，数组a产生的哈夫曼树应该是这样的<br><img src="https://img-blog.csdnimg.cn/2020070916332757.PNG#pic_center" alt="在这里插入图片描述"></p>
+<p>我们可以发现，数组中所有的权值都在哈夫曼树的最末端，那么如何用代码实现呢<br>给出每次找出数组中最小值的方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetMin</span><span class="params">(HT tree[],<span class="keyword">int</span> n)</span><span class="comment">//获取初始数组中的最小值，并且返回最小值元素的下标，在前1~n-1中寻找最小值 </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">min</span>;</span><br><span class="line">	<span class="keyword">int</span> loc;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)<span class="comment">//先选择第一个标志是0的作为临时最小值（标志的意思是有没有参与过比较）</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(tree[i].flag == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">min</span> = tree[i].weight;</span><br><span class="line">			loc = i;</span><br><span class="line">			tree[i].flag = <span class="number">1</span>;<span class="comment">//选定后，将其标志设为1 </span></span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	 &#125; </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)<span class="comment">//遍历，寻找真正的标志为0的最小值 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">min</span> &lt; tree[i].weight&amp;&amp;tree[i].flag == <span class="number">0</span>)</span><br><span class="line">			loc = loc;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">min</span> &gt;= tree[i].weight&amp;&amp;tree[i].flag == <span class="number">0</span>)<span class="comment">//要替换最小值，且替换值之前没有被使用过,则</span></span><br><span class="line">		<span class="comment">//将上一个假最小值的标志还原 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">min</span> = tree[i].weight; </span><br><span class="line">			tree[loc].flag = <span class="number">0</span>;</span><br><span class="line">			loc = i;</span><br><span class="line">			tree[i].flag = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> loc;<span class="comment">//返回最小值的位置 </span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>从上面的图可以看出，哈夫曼树做需要的总结点数是数组中元素数量的两倍，如果数组的规模为n，哈夫曼树的节点规模为m = 2n,能用的节点数是m - 1</strong>，给出构造哈夫曼树的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CreatHuffmanTree</span><span class="params">(<span class="keyword">int</span> a[],HT tree[],<span class="keyword">int</span> n)</span><span class="comment">//创建哈夫曼树 </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> m = <span class="number">2</span> * n - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= m;i++)<span class="comment">//所有节点初始化 </span></span><br><span class="line">	&#123;</span><br><span class="line">		tree[i].parents = <span class="number">0</span>;</span><br><span class="line">		tree[i].LChild = <span class="number">0</span>;</span><br><span class="line">		tree[i].RChild = <span class="number">0</span>;</span><br><span class="line">		tree[i].flag = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)<span class="comment">//建立哈夫曼树的初始节点，1~n的哈夫曼树节点的权值就是数组中0~n-1对应的权值 </span></span><br><span class="line">	&#123;</span><br><span class="line">		tree[i + <span class="number">1</span>].weight = a[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//最后一个节点tree[m]不用比较，因为最后一个节点是根节点，直接和处他以外的两个节点建立联系即可，</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n;i &lt; m;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> s1 = GetMin(tree,i);<span class="comment">//获取哈夫曼节点中最小的两个权值的节点位置 </span></span><br><span class="line">		<span class="keyword">int</span> s2 = GetMin(tree,i);</span><br><span class="line">		tree[s1].parents = i + <span class="number">1</span>;<span class="comment">//给两个最小值的节点找父母节点，就将当前的节点（第i + 1）个节点当场他们的父母节点 </span></span><br><span class="line">		tree[s2].parents = i + <span class="number">1</span>;</span><br><span class="line">		tree[i + <span class="number">1</span>].LChild = s1;<span class="comment">//给当前父母节点规定儿子，两个最小直接点分别为当前节点的左右孩子 </span></span><br><span class="line">		tree[i + <span class="number">1</span>].RChild = s2;</span><br><span class="line">		tree[i + <span class="number">1</span>].weight = tree[s1].weight + tree[s2].weight;<span class="comment">//更改父母节点的权值，是两个最小节点的权值之和 </span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们之前提到过，每次选择出来两个节点之后，要将两个节点删除，这里是怎么做到的呢，在寻找最小值的函数中，每次挑选出来最小值之后，要将flag变为1，在下一次选择的时候就要跳过，就相当于将其从数组中删除了。</p>
+<p>这样我们就能获得一个正确的哈夫曼树，可以对他进行哈夫曼编码，我们规定，如果一个节点是他的父母的左孩子，他的编码值是0，如果是右孩子，他的编码值是1，比如“1”，是“3”的左孩子，“3”是“7”的左孩子，一直向上推，我们推出来”1“的编码是1000，</p>
+<p>上面说过，<strong>哈夫曼编码中较短的编码一定不是较长的编码的前缀</strong>，原因就是如果编码1是编码2的前缀，那么编码2一定是在编码1的基础上再走了一步，<strong>这就说明编码1不是叶子结点的编码</strong>，而所有需要编码的字母的权重都在叶子节点上，与前面的有矛盾，所以得证。</p>
+<p>下面是哈夫曼编码的代码实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">HuffmanCode</span><span class="params">(HT tree[],<span class="keyword">char</span> code[],<span class="keyword">int</span> loc,<span class="keyword">int</span> n)</span><span class="comment">//code是保存编码结果的数组，loc是指对数组中第几个元素进行编码，元素下标从1开始（可以自己定义，我这里是从1开始的），n是code数组的规模</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	code[n - <span class="number">1</span>] = <span class="string">'\n'</span>;<span class="comment">//将数组的最后一为改为换行符</span></span><br><span class="line">	<span class="keyword">int</span> parents = tree[loc].parents;<span class="comment">//获取要编码的节点的父母节点的位置</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n - <span class="number">2</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(tree[parents].parents == <span class="number">0</span>)<span class="comment">//遇到头节点，跳出</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(tree[parents].LChild == loc)</span><br><span class="line">				code[i] = <span class="string">'0'</span>;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(tree[parents].RChild == loc)</span><br><span class="line">			code[i] = <span class="string">'1'</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		 &#125;     </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(tree[parents].LChild == loc)</span><br><span class="line">				code[i] = <span class="string">'0'</span>;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(tree[parents].RChild == loc)</span><br><span class="line">				code[i] = <span class="string">'1'</span>;</span><br><span class="line">			loc = parents;<span class="comment">//再从父母节点开始，寻找他的父母节点，重复该过程</span></span><br><span class="line">			parents = tree[loc].parents; </span><br><span class="line">		&#125;</span><br><span class="line">	 &#125; </span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以获得任意的叶子结点的编码了，希望这篇博客对大家理解哈夫曼树有一些帮助。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/" data-id="ckcekn6dy0000q4vs797481ro" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/07/%E5%9F%BA%E6%9C%AC%E7%88%AC%E8%99%AB%E7%88%AC%E5%8F%96%E6%9C%89%E9%81%93%E7%BF%BB%E8%AF%91/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基本爬虫爬取有道翻译</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/">哈夫曼树与哈夫曼编码原理与代码实现</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/%E5%9F%BA%E6%9C%AC%E7%88%AC%E8%99%AB%E7%88%AC%E5%8F%96%E6%9C%89%E9%81%93%E7%BF%BB%E8%AF%91/">基本爬虫爬取有道翻译</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/C%E8%AF%AD%E8%A8%80%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/">C语言多线程编程基础</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
