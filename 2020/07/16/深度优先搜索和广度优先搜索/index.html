@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>深度优先搜索和广度优先搜索 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="源代码在文章最后！ 深度优先搜索深度优先搜索又叫depth first search，是一种在开发爬虫早期比较常用的方法，这里我会用最易懂的方法让大家理解深度优先搜索，所谓深度优先搜索，就是找到图中的一个节点，然后依此寻找与他相关的下一个节点，形象地来说就是一条路走到黑，而广度优先搜索就是以一个节点开头，一次访问这个节点所有有关系的节点，先横向发展，在纵向延伸。需要用图举一个例子 这是一个无向图，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度优先搜索和广度优先搜索">
+<meta property="og:url" content="http://yoursite.com/2020/07/16/%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%92%8C%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="源代码在文章最后！ 深度优先搜索深度优先搜索又叫depth first search，是一种在开发爬虫早期比较常用的方法，这里我会用最易懂的方法让大家理解深度优先搜索，所谓深度优先搜索，就是找到图中的一个节点，然后依此寻找与他相关的下一个节点，形象地来说就是一条路走到黑，而广度优先搜索就是以一个节点开头，一次访问这个节点所有有关系的节点，先横向发展，在纵向延伸。需要用图举一个例子 这是一个无向图，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200716000304832.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020071611342753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200716143801792.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-07-16T07:01:01.475Z">
+<meta property="article:modified_time" content="2020-07-16T07:01:26.159Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200716000304832.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-深度优先搜索和广度优先搜索" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/07/16/%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%92%8C%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/" class="article-date">
+  <time datetime="2020-07-16T07:01:01.475Z" itemprop="datePublished">2020-07-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深度优先搜索和广度优先搜索
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>源代码在文章最后！</p>
+<h2 id="深度优先搜索"><a href="#深度优先搜索" class="headerlink" title="深度优先搜索"></a><strong>深度优先搜索</strong></h2><p>深度优先搜索又叫depth first search，是一种在开发爬虫早期比较常用的方法，这里我会用最易懂的方法让大家理解深度优先搜索<strong>，所谓深度优先搜索，就是找到图中的一个节点，然后依此寻找与他相关的下一个节点，形象地来说就是一条路走到黑</strong>，<br>而广度优先搜索就是以一个节点开头，一次访问这个节点所有有关系的节点，<strong>先横向发展，在纵向延伸</strong>。需要用图举一个例子</p>
+<p><img src="https://img-blog.csdnimg.cn/20200716000304832.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这是一个无向图，现在要对这个无向图进行深度优先搜索。<strong>如果我们把1当作开头的节点，那么可能的寻找顺序为1-&gt;2-&gt;5-&gt;3是深度优先搜索的一条路，</strong></p>
+<p>想要对一个图进行深度优先搜索，就先要想办法将这个图存储起来，这里我们选择用邻接矩阵进行储存，我用的邻接矩阵是int类型的，也可以自己定义结构体来储存更多信息。<br>邻接矩阵是这样表现这个图的。</p>
+<p>第几行就是第几个节点<strong>（从0开始）</strong>，在一行中，哪一列的值为1，就是说明行所代表的节点与列所代表的节点有关系。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> graph[][<span class="number">6</span>] = &#123;	    <span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,</span><br><span class="line">						<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>, &#125;;</span><br><span class="line">						<span class="comment">//创立无向图</span></span><br></pre></td></tr></table></figure>
+
+<p>这里可以看到这个图是沿对角线对称的，这也是无向图的特点，这个无向图总共有六个元素，就是上面图中所画的图。</p>
+<p>要分清楚这个图中的节点是否被访问过，<strong>我们还需要一个数组visited[]来记录每个节点的访问信息。</strong></p>
+<p>在判断这个图中的节点是不是每一个都被访问了，我们只需要遍历visited数组，如果数组中的所有值都是1（被访问过了），那么就可以结束搜索。<br>下面是广度优先搜索的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DFS</span><span class="params">(<span class="keyword">int</span> graph[][<span class="number">6</span>],<span class="keyword">int</span> v,<span class="keyword">int</span> visited[])</span><span class="comment">//参数分别是图，开始搜索的节点，visited数组</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"访问%d节点\n"</span>,v);<span class="comment">//可以看到访问节点的顺序</span></span><br><span class="line">	visited[v] = <span class="number">1</span>;<span class="comment">//表示被访问过</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> w = <span class="number">0</span>;w &lt; VexNum;w++)<span class="comment">//寻找第v行所有没有被访问过的节点 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(graph[v][w] != <span class="number">0</span>&amp;&amp;!visited[w])<span class="comment">//在一行中搜索没有被访问过的节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			DFS(graph,w,visited);<span class="comment">//以这个节点为基础开始访问 </span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从这个图中就可以感受到 “一条路走到黑的特点” ，找到一个节点，标记访问之后，紧接着寻找与他有关的下一个节点，而不是遍历所有与他相关的节点，所以深度优先搜索更容易到达数据的最低端。时间复杂度是O(n+e)，n是节点数，e是边数</p>
+<h2 id="广度优先搜索"><a href="#广度优先搜索" class="headerlink" title="广度优先搜索"></a><strong>广度优先搜索</strong></h2><p>下面是有关广度优先搜索的内容，和深度优先搜索结合起来会更加易懂。为了方便描述和理解，这里<strong>用邻接表而不是邻接矩阵</strong>来储存图之间的关系。邻接表和邻接矩阵就不做过多介绍了。<br>大家如果对邻接表有疑问，最好先搞清楚邻接表，不然下面的内容可能会有理解问题。</p>
+<p>给出邻接表的储存方式<br><img src="https://img-blog.csdnimg.cn/2020071611342753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span>&#123;</span><span class="comment">//边节点的数据结构</span></span><br><span class="line">	<span class="keyword">int</span> loc;<span class="comment">//边的一个端点，</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span>* <span class="title">nextarc</span>;</span><span class="comment">//指向与第一个图节点有关的下一个图节点</span></span><br><span class="line">&#125;ArcNode;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span><span class="comment">//图中每一个节点的数据结构</span></span><br><span class="line">	<span class="keyword">int</span> data;<span class="comment">//节点所代表的权值</span></span><br><span class="line">	ArcNode* firstarc;<span class="comment">//指向该结点的第一个边界点</span></span><br><span class="line">&#125;VNode;</span><br></pre></td></tr></table></figure>
+<p><strong>其中VNode是图中的节点，ArcNode是与VNode有关系的节点，虽然也代表了图中的节点，和VNode有区别，只是用来表示节点之间的关系</strong>。<br>在输入节点之间的关系的时候，使用头插法比较简便，不需要向后找到链表的末尾，<br>其中ArcNum是图中边的总数。<br>插入的方法具体是：</p>
+<p>1.获取两个有关系的节点loc1，loc2<br>2.将loc2打包成一个边节点，<br>3.因为loc1和loc2有联系，找到loc1所代表的节点，然后将loc2打包后的节点插入loc1所代表的节点和loc1的firstArc之间，就是让loc2成为loc1的firstArc，loc1的节点往后依此移动一位，<br>4.因为建立的是无向图，所以要对loc2所代表的图节点与loc1在建立一次关系。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; ArcNum;i++)<span class="comment">//获取节点之间边的关系 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> loc1,loc2;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;loc1,&amp;loc2);<span class="comment">//输入两个相关的节点 </span></span><br><span class="line">		loc1--;<span class="comment">//从零开始计算 </span></span><br><span class="line">		loc2--;</span><br><span class="line">		ArcNode* temp1;</span><br><span class="line">		ArcNode* p1 = (ArcNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ArcNode));<span class="comment">//建立一个新的边关系，并对其赋值 </span></span><br><span class="line">		p1-&gt;loc = loc2;<span class="comment">//使用头插法 </span></span><br><span class="line">		temp1 = graph[loc1].firstarc;</span><br><span class="line">		graph[loc1].firstarc = p1;</span><br><span class="line">		p1-&gt;nextarc = temp1;</span><br><span class="line">		ArcNode* temp2;<span class="comment">//因为所建立的图为无向图，所以要将两个节点之间的关系在建立一遍 </span></span><br><span class="line">		ArcNode* p2 = (ArcNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ArcNode));</span><br><span class="line">		p2-&gt;loc = loc1;</span><br><span class="line">		temp2 = graph[loc2].firstarc;</span><br><span class="line">		graph[loc2].firstarc = p2;</span><br><span class="line">		p2-&gt;nextarc = temp2;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200716143801792.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hlaWlvd29ybGQx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>插入完所有节点之后，就可以进行广度优先搜索了，同样，也需要一个visited[]数组来记录哪些节点已经被访问过，因为采用的是邻接表的储存方法，所以很容易能知道一个节点的所有相关节点，只需要从头节点根据指针一直想后搜索，直到指针的值是NULL为止。</p>
+<p>在遍历的时候，需要用到循环队列在访问一个节点的关联节点时，将他的关联节点依此入队，这个节点访问完成后，下一次从队尾出队一个元素，在对这个元素进行搜索，重复上述的入队过程，直到所有节点都被访问到。</p>
+<p>使用循环队列的原因是因为节省空间。需要对队列指针进行取余，防止越界。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BFS</span><span class="params">(VNode graph[],<span class="keyword">int</span> visited[],<span class="keyword">int</span> v)</span><span class="comment">//给出图，访问数组还有一个开始顶点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"访问节点%d\n"</span>,v);</span><br><span class="line">	visited[v] = <span class="number">1</span>;<span class="comment">//已经访问过</span></span><br><span class="line">	<span class="built_in">queue</span>[PHead++] = v;<span class="comment">//v节点入队</span></span><br><span class="line">	<span class="keyword">while</span>(!QueueEmpty())<span class="comment">//队列非空 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(AllVisited(visited) == <span class="number">1</span>)<span class="comment">//所有节点都被访问过 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"所有节点都以访问\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ;</span><br><span class="line">		 &#125; </span><br><span class="line">		<span class="keyword">int</span> temp = <span class="built_in">queue</span>[PTail];<span class="comment">//将队尾元素出队， </span></span><br><span class="line">		<span class="built_in">queue</span>[PTail] = <span class="number">100</span>;<span class="comment">//队列元素初始化 </span></span><br><span class="line">		PTail++;<span class="comment">//尾指针前移 </span></span><br><span class="line">		PTail = PTail % <span class="number">8</span>;<span class="comment">//避免越界 </span></span><br><span class="line">		ArcNode* arc_temp = graph[temp].firstarc;<span class="comment">//节点的第一个指针 </span></span><br><span class="line">		<span class="keyword">while</span>(arc_temp != <span class="literal">NULL</span>)<span class="comment">//遍历这个节点的所又关联节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(visited[arc_temp-&gt;loc] == <span class="number">0</span>)<span class="comment">//这个节点的关联节点没有被访问过</span></span><br><span class="line">			&#123;</span><br><span class="line">				visited[arc_temp-&gt;loc] = <span class="number">1</span>;<span class="comment">//表示已经被访问</span></span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"访问节点%d\n"</span>,arc_temp-&gt;loc);</span><br><span class="line">				<span class="built_in">queue</span>[PHead++] = arc_temp-&gt;loc;<span class="comment">//将这个节点入队 </span></span><br><span class="line">				PHead = PHead % <span class="number">8</span>;<span class="comment">//保证不会越界 </span></span><br><span class="line">			 &#125; </span><br><span class="line">			arc_temp = arc_temp-&gt;nextarc;<span class="comment">//寻找下一个关联节点 </span></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果要遍历的是一棵树的话，深度优先搜索可以很快地走到叶子节点，而广度优先搜索的路径从根节点开始向四周所有可以走的路径蔓延。</p>
+<h2 id="深度优先搜索代码"><a href="#深度优先搜索代码" class="headerlink" title="深度优先搜索代码"></a>深度优先搜索代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> VexNum = <span class="number">6</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">VisitAll</span><span class="params">(<span class="keyword">int</span> visited[],<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(visited[i] == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DFS</span><span class="params">(<span class="keyword">int</span> graph[][<span class="number">6</span>],<span class="keyword">int</span> v,<span class="keyword">int</span> visited[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"访问%d节点\n"</span>,v);</span><br><span class="line">	visited[v] = <span class="number">1</span>;<span class="comment">//表示被访问过</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> w = <span class="number">0</span>;w &lt; VexNum;w++)<span class="comment">//寻找第v行所有没有被访问过的节点 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(graph[v][w] != <span class="number">0</span>&amp;&amp;!visited[w])<span class="comment">//出现没有被访问过的节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			DFS(graph,w,visited);<span class="comment">//以这个节点为基础开始访问 </span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> graph[][<span class="number">6</span>] = &#123;	<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,</span><br><span class="line">						<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">						<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>, &#125;;</span><br><span class="line">						<span class="comment">//创立无向图 </span></span><br><span class="line">	<span class="keyword">int</span> visited[<span class="number">6</span>] = &#123;<span class="number">0</span>&#125;;<span class="comment">//记录节点的访问情况1 </span></span><br><span class="line">	DFS(graph,<span class="number">0</span>,visited);</span><br><span class="line">	<span class="keyword">if</span>(VisitAll(visited,VexNum) == <span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"所有节点都被访问了\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span>(VisitAll(visited,VexNum) == <span class="number">0</span>)<span class="comment">//未遍历所有节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"非连通图\n"</span>);</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; VexNum;i++)<span class="comment">//随便找到一个没有遍历的节点，以他为开头 遍历 </span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(visited[i] == <span class="number">0</span>)</span><br><span class="line">					DFS(graph,i,visited);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">					</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="广度优先搜索代码"><a href="#广度优先搜索代码" class="headerlink" title="广度优先搜索代码"></a>广度优先搜索代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> VexNum = <span class="number">8</span>;<span class="comment">//节点的个数</span></span><br><span class="line"><span class="keyword">int</span> ArcNum = <span class="number">9</span>;<span class="comment">//变得个数</span></span><br><span class="line"><span class="keyword">int</span> PHead = <span class="number">0</span>;队列的头指针</span><br><span class="line"><span class="keyword">int</span> PTail = <span class="number">0</span>;<span class="comment">//队列的尾指针</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">queue</span>[<span class="number">8</span>] = &#123;<span class="number">100</span>&#125;;<span class="comment">//队列初始化每个值为100</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> loc;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span>* <span class="title">nextarc</span>;</span></span><br><span class="line">&#125;ArcNode;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> data;</span><br><span class="line">	ArcNode* firstarc;</span><br><span class="line">&#125;VNode;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">QueueEmpty</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(PHead % <span class="number">8</span> == PTail % <span class="number">8</span>)<span class="comment">//队列为空 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">AllVisited</span><span class="params">(<span class="keyword">int</span> visited[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; VexNum;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(visited[i] == <span class="number">0</span>)<span class="comment">//存在没有被访问过的节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"> &#125; </span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BFS</span><span class="params">(VNode graph[],<span class="keyword">int</span> visited[],<span class="keyword">int</span> v)</span><span class="comment">//给出图，访问数组还有一个开始顶点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"访问节点%d\n"</span>,v);</span><br><span class="line">	visited[v] = <span class="number">1</span>;<span class="comment">//已经访问过</span></span><br><span class="line">	<span class="built_in">queue</span>[PHead++] = v;<span class="comment">//v节点入队</span></span><br><span class="line">	<span class="keyword">while</span>(!QueueEmpty())<span class="comment">//队列非空 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(AllVisited(visited) == <span class="number">1</span>)<span class="comment">//所有节点都被访问过 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"所有节点都以访问\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ;</span><br><span class="line">		 &#125; </span><br><span class="line">		<span class="keyword">int</span> temp = <span class="built_in">queue</span>[PTail];<span class="comment">//将队尾元素出队， </span></span><br><span class="line">		<span class="built_in">queue</span>[PTail] = <span class="number">100</span>;<span class="comment">//队列元素初始化 </span></span><br><span class="line">		PTail++;<span class="comment">//尾指针前移 </span></span><br><span class="line">		PTail = PTail % <span class="number">8</span>;<span class="comment">//避免越界 </span></span><br><span class="line">		ArcNode* arc_temp = graph[temp].firstarc;<span class="comment">//节点的第一个指针 </span></span><br><span class="line">		<span class="keyword">while</span>(arc_temp != <span class="literal">NULL</span>)<span class="comment">//遍历这个节点的所又关联节点 </span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(visited[arc_temp-&gt;loc] == <span class="number">0</span>)<span class="comment">//这个节点的关联节点没有被访问过</span></span><br><span class="line">			&#123;</span><br><span class="line">				visited[arc_temp-&gt;loc] = <span class="number">1</span>;<span class="comment">//表示已经被访问</span></span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"访问节点%d\n"</span>,arc_temp-&gt;loc);</span><br><span class="line">				<span class="built_in">queue</span>[PHead++] = arc_temp-&gt;loc;<span class="comment">//将这个节点入队 </span></span><br><span class="line">				PHead = PHead % <span class="number">8</span>;<span class="comment">//保证不会越界 </span></span><br><span class="line">			 &#125; </span><br><span class="line">			arc_temp = arc_temp-&gt;nextarc;<span class="comment">//寻找下一个关联节点 </span></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	 </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	VNode graph[VexNum];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; VexNum;i++)<span class="comment">//初始化节点 </span></span><br><span class="line">	&#123;</span><br><span class="line">		graph[i].firstarc = <span class="literal">NULL</span>;</span><br><span class="line">		graph[i].data = <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; VexNum;i++)<span class="comment">//获得每个结点的data值 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;(graph[i].data));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; ArcNum;i++)<span class="comment">//获取节点之间边的关系 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> loc1,loc2;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;loc1,&amp;loc2);<span class="comment">//输入两个相关的节点 </span></span><br><span class="line">		loc1--;<span class="comment">//从零开始计算 </span></span><br><span class="line">		loc2--;</span><br><span class="line">		ArcNode* temp1;</span><br><span class="line">		ArcNode* p1 = (ArcNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ArcNode));<span class="comment">//建立一个新的边关系，并对其赋值 </span></span><br><span class="line">		p1-&gt;loc = loc2;<span class="comment">//使用头插法 </span></span><br><span class="line">		temp1 = graph[loc1].firstarc;</span><br><span class="line">		graph[loc1].firstarc = p1;</span><br><span class="line">		p1-&gt;nextarc = temp1;</span><br><span class="line">		ArcNode* temp2;<span class="comment">//因为所建立的图为无向图，所以要将两个节点之间的关系在建立一遍 </span></span><br><span class="line">		ArcNode* p2 = (ArcNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ArcNode));</span><br><span class="line">		p2-&gt;loc = loc1;</span><br><span class="line">		temp2 = graph[loc2].firstarc;</span><br><span class="line">		graph[loc2].firstarc = p2;</span><br><span class="line">		p2-&gt;nextarc = temp2;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> visited[VexNum] = &#123;<span class="number">0</span>&#125;; <span class="comment">//初始化visited数组 </span></span><br><span class="line">	BFS(graph,visited,<span class="number">0</span>);<span class="comment">//从第零个节点开始进行广度优先搜索 </span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/07/16/%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%92%8C%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/" data-id="ckcog7frf0000v0vsf3tv5nlz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">哈夫曼树与哈夫曼编码原理与代码实现</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/07/16/%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%92%8C%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/">深度优先搜索和广度优先搜索</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/">哈夫曼树与哈夫曼编码原理与代码实现</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/%E5%9F%BA%E6%9C%AC%E7%88%AC%E8%99%AB%E7%88%AC%E5%8F%96%E6%9C%89%E9%81%93%E7%BF%BB%E8%AF%91/">基本爬虫爬取有道翻译</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/C%E8%AF%AD%E8%A8%80%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/">C语言多线程编程基础</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
