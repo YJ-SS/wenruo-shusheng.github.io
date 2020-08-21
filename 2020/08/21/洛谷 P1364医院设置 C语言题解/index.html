@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>洛谷 P1364医院设置 C语言题解 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="只是一道在一棵树上选取一个节点作为重心，然后求得周围节点到重心的加权距离最小的题目，如果用一般的树结构来存储的话，因为要同时寻找某个节点的儿子节点和父亲节点，所以会涉及到双向的树。 为了将题目简化，我们用邻接表来储存这棵树，邻接表中的元素分别储存树的权值，左右孩子（如果没有，就是0，有的话就是对应节点的编号），父亲节点（如果没有，就是0，有的话就是对应节点的编号），用二维数组来表示邻接矩阵。 对于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="洛谷 P1364医院设置 C语言题解">
+<meta property="og:url" content="http://yoursite.com/2020/08/21/%E6%B4%9B%E8%B0%B7%20P1364%E5%8C%BB%E9%99%A2%E8%AE%BE%E7%BD%AE%20C%E8%AF%AD%E8%A8%80%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="只是一道在一棵树上选取一个节点作为重心，然后求得周围节点到重心的加权距离最小的题目，如果用一般的树结构来存储的话，因为要同时寻找某个节点的儿子节点和父亲节点，所以会涉及到双向的树。 为了将题目简化，我们用邻接表来储存这棵树，邻接表中的元素分别储存树的权值，左右孩子（如果没有，就是0，有的话就是对应节点的编号），父亲节点（如果没有，就是0，有的话就是对应节点的编号），用二维数组来表示邻接矩阵。 对于">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-21T15:33:25.881Z">
+<meta property="article:modified_time" content="2020-08-21T15:33:41.359Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-洛谷 P1364医院设置 C语言题解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/21/%E6%B4%9B%E8%B0%B7%20P1364%E5%8C%BB%E9%99%A2%E8%AE%BE%E7%BD%AE%20C%E8%AF%AD%E8%A8%80%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2020-08-21T15:33:25.881Z" itemprop="datePublished">2020-08-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      洛谷 P1364医院设置 C语言题解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>只是一道在一棵树上选取一个节点作为重心，然后求得周围节点到重心的加权距离最小的题目，如果用一般的树结构来存储的话，因为要同时寻找某个节点的儿子节点和父亲节点，所以会涉及到双向的树。</p>
+<p>为了将题目简化，我们用邻接表来储存这棵树，<strong>邻接表中的元素分别储存树的权值，左右孩子（如果没有，就是0，有的话就是对应节点的编号），父亲节点（如果没有，就是0，有的话就是对应节点的编号）</strong>，用二维数组来表示邻接矩阵。</p>
+<p>对于邻接矩阵的每一个节点进行广度优先搜索，bfs，在每次计算的时候还要将目前访问的节点与重心的相对距离传入函数，完成计算。计算完所有节点的值之后，从这中间找到最小的输出。</p>
+<p>想到将这道题用邻接表处理之后，编程过程并不复杂。</p>
+<p><strong>map是邻接表，flag是确定当前节点是否被访问过的数组，total储存着每个节点计算的值，min是最小数的阈值（设置一个不可能的答案），在for循环中将树中的信息储存起来，re_flag函数将flag数组清零，</strong></p>
+<p>在for循环中对每一个节点进行bfs，将结果result（全局变量）存入total数组中，最后进行比较，输出最小值即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">map</span>[<span class="number">150</span>][<span class="number">6</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> n;</span><br><span class="line">	<span class="keyword">int</span> flag[n + <span class="number">1</span>] ;</span><br><span class="line">	<span class="keyword">int</span> total[n + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">min</span> = <span class="number">1000000</span>;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> value,L_child,R_child;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;value,&amp;L_child,&amp;R_child);</span><br><span class="line">		<span class="built_in">map</span>[i][<span class="number">0</span>] = value;</span><br><span class="line">		<span class="built_in">map</span>[i][<span class="number">1</span>] = L_child;</span><br><span class="line">		<span class="built_in">map</span>[i][<span class="number">2</span>] = R_child;</span><br><span class="line">		<span class="comment">//将左右孩子与父亲节点建立联系 </span></span><br><span class="line">		<span class="built_in">map</span>[L_child][<span class="number">3</span>] = i;</span><br><span class="line">		<span class="built_in">map</span>[R_child][<span class="number">3</span>] = i;</span><br><span class="line">	&#125;</span><br><span class="line">	re_flag(flag,n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		bfs(<span class="built_in">map</span>,i,flag,<span class="number">1</span>);</span><br><span class="line">		total[i] = result;</span><br><span class="line">		re_flag(flag,n);</span><br><span class="line">		<span class="built_in">min</span> = (<span class="built_in">min</span> &lt; result) ? <span class="built_in">min</span> : result;</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>,<span class="built_in">min</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心的代码是bfs，<strong>参数分别是邻接表，开始节点的编号，flag数组，节点权值应该乘的倍数num。</strong><br>先将当前节点的flag值设为1，再分别对其左右孩子，父亲节点进行bfs，如果其节点符合要求，就在从这个节点开始进行bfs。在进行下一次递归时，应为相对位置的增加，num应该递增。<br>同时将该节点的flag值设为1表示已经被访问过。最后得到的result的值就是以这个节点位重心所得的计算结果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">(<span class="keyword">int</span> <span class="built_in">map</span>[][<span class="number">6</span>],<span class="keyword">int</span> s_node,<span class="keyword">int</span> flag[],<span class="keyword">int</span> num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	flag[s_node] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">map</span>[s_node][<span class="number">1</span>] != <span class="number">0</span>&amp;&amp;flag[<span class="built_in">map</span>[s_node][<span class="number">1</span>]] == <span class="number">0</span>)<span class="comment">//左孩子且没有被访问过 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> loc = <span class="built_in">map</span>[s_node][<span class="number">1</span>];</span><br><span class="line">		result += num * <span class="built_in">map</span>[loc][<span class="number">0</span>];</span><br><span class="line">		flag[loc] = <span class="number">1</span>;</span><br><span class="line">		<span class="comment">//printf("num = %d result = %d value = %d\n",num,result,map[loc][0]);</span></span><br><span class="line">		bfs(<span class="built_in">map</span>,loc,flag,num + <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">map</span>[s_node][<span class="number">2</span>] != <span class="number">0</span>&amp;&amp;flag[<span class="built_in">map</span>[s_node][<span class="number">2</span>]] == <span class="number">0</span>)<span class="comment">//右孩子 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> loc = <span class="built_in">map</span>[s_node][<span class="number">2</span>];</span><br><span class="line">		result += num * <span class="built_in">map</span>[loc][<span class="number">0</span>];</span><br><span class="line">		flag[loc] = <span class="number">1</span>;</span><br><span class="line">		<span class="comment">//printf("num = %d result = %d value = %d\n",num,result,map[loc][0]);</span></span><br><span class="line">		bfs(<span class="built_in">map</span>,loc,flag,num + <span class="number">1</span>);		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">map</span>[s_node][<span class="number">3</span>] != <span class="number">0</span>&amp;&amp;flag[<span class="built_in">map</span>[s_node][<span class="number">3</span>]] == <span class="number">0</span>)<span class="comment">//父亲节点 </span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> loc = <span class="built_in">map</span>[s_node][<span class="number">3</span>];</span><br><span class="line">		result += num * <span class="built_in">map</span>[loc][<span class="number">0</span>];</span><br><span class="line">		flag[loc] = <span class="number">1</span>;</span><br><span class="line">		<span class="comment">//printf("num = %d result = %d value = %d\n",num,result,map[loc][0]);</span></span><br><span class="line">		bfs(<span class="built_in">map</span>,loc,flag,num + <span class="number">1</span>);		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个代码还有很大的改进空间，这里只是说明基本思想，</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/21/%E6%B4%9B%E8%B0%B7%20P1364%E5%8C%BB%E9%99%A2%E8%AE%BE%E7%BD%AE%20C%E8%AF%AD%E8%A8%80%E9%A2%98%E8%A7%A3/" data-id="cke4eb7nh00002cvs5nr18hw6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/23/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%20%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%20%E5%BF%AB%E6%8E%92%20%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%20%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20%E5%A0%86%E6%8E%92%E5%BA%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数据结构 折半插入排序 快排 归并排序 基数排序 堆排序</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/21/%E6%B4%9B%E8%B0%B7%20P1364%E5%8C%BB%E9%99%A2%E8%AE%BE%E7%BD%AE%20C%E8%AF%AD%E8%A8%80%E9%A2%98%E8%A7%A3/">洛谷 P1364医院设置 C语言题解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/23/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%20%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%20%E5%BF%AB%E6%8E%92%20%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%20%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20%E5%A0%86%E6%8E%92%E5%BA%8F/">数据结构 折半插入排序 快排 归并排序 基数排序 堆排序</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/16/%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%92%8C%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/">深度优先搜索和广度优先搜索</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/09/%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/">哈夫曼树与哈夫曼编码原理与代码实现</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/07/%E5%9F%BA%E6%9C%AC%E7%88%AC%E8%99%AB%E7%88%AC%E5%8F%96%E6%9C%89%E9%81%93%E7%BF%BB%E8%AF%91/">基本爬虫爬取有道翻译</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
